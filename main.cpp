@@ -19,7 +19,7 @@ int main(int argc, char** argv)
    win.set_size_request(768, 768);
    win.set_title("Cairomm Clock");
 
-   Clock c;
+   Doubleslit c;
    win.add(c);
    c.show();
 
