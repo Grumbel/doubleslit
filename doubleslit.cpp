@@ -6,6 +6,8 @@
 #include <cmath>
 #include <cairomm/context.h>
 #include <glibmm/main.h>
+
+//#define GLM_FORCE_RADIANS
 #include <glm/ext.hpp>
 
 #include "doubleslit.hpp"
@@ -14,20 +16,20 @@ Physics::Physics() :
   m_segments(),
   m_rays()
 {
-  if (true)
+  if (false) // double slit
   {
     add_rect(100, 400, 200, 1);
     add_rect(304, 400, 2, 1);
     add_rect(310, 400, 200, 1);
   }
-
-  if (false)
+  else if (false)
+  {
     for(int i = 0; i < 30; ++i)
     {
       add_rect(rand()%600, rand()%600, rand()%200, rand()%200);
     }
-
-  if (false)
+  }
+  else if (true)
   {
     glm::vec2 p;
     glm::vec2 last;
@@ -47,9 +49,7 @@ Physics::Physics() :
       last = p;
     }
   }
-
-  // parabola
-  if (false)
+  else if (false) // parabola
   {
     glm::vec2 p;
     glm::vec2 last;
@@ -71,7 +71,7 @@ Physics::Physics() :
     }
   }
 
-  cast_ray(glm::vec2(205.0f, 50.0f), glm::normalize(glm::vec2(0.1, 1.0f)));
+  //cast_ray(glm::vec2(205.0f, 50.0f), glm::normalize(glm::vec2(0.1, 1.0f)));
 }
 
 void
@@ -195,7 +195,7 @@ Physics::draw(const Cairo::RefPtr<Cairo::Context>& cr)
   cr->set_line_width(4.0);
   for(auto& ray : m_rays)
   {
-    float alpha = 0.01f;
+    float alpha = 0.2f;
     if (ray.depth == 0)
       cr->set_source_rgba(0.1, 1, 0.1, alpha);
     else if (ray.depth == 1)
@@ -325,7 +325,7 @@ Doubleslit::on_button_press_event (GdkEventButton* ev)
     auto generator = std::bind(distribution, engine);
 
     m_physics.clear_rays();
-    int n = 1000;
+    int n = 20;
     for(int i = 0; i < n; i += 1)
     {
       auto fn = [&]() -> float {return generator(); };
