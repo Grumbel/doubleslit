@@ -23,7 +23,7 @@
 #include <cairomm/context.h>
 #include <glibmm/main.h>
 
-//#define GLM_FORCE_RADIANS
+#define GLM_FORCE_RADIANS
 #include <glm/ext.hpp>
 
 #include "doubleslit.hpp"
@@ -146,7 +146,7 @@ Doubleslit::on_button_press_event (GdkEventButton* ev)
         };*/
 
       glm::vec2 dir = p2 - p1;
-      dir = glm::rotate(dir, fn() * 10.0f);
+      dir = glm::rotate(dir, glm::radians(fn() * 10.0f));
 
       glm::vec2 off(fn() * -45.0f,
                     fn() * -45.0f);
