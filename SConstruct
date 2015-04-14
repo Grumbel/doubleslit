@@ -18,6 +18,6 @@ env = Environment(ENV=os.environ,
                              "-Winit-self", # only works with >= -O1
                              "-Wno-unused-parameter"])
 env.ParseConfig("pkg-config --cflags --libs gtkmm-3.0 | sed 's/-I/-isystem/g'")
-env.Program("doubleslit", ["src/doubleslit.cpp", "src/main.cpp", "src/line.cpp"])
+env.Program("doubleslit", Glob("src/*.cpp"))
 
 # EOF #
