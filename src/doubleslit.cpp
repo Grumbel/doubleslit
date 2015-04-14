@@ -105,7 +105,6 @@ Doubleslit::on_button_release_event (GdkEventButton* ev)
 bool
 Doubleslit::on_button_press_event (GdkEventButton* ev)
 {
-  bool recast = false;
   if (ev->button == 1)
   {
     glm::vec2 dir = p2 - p1;
@@ -114,13 +113,11 @@ Doubleslit::on_button_press_event (GdkEventButton* ev)
     p1.y = static_cast<float>(ev->y);
 
     p2 = p1 + dir;
-    recast = true;
   }
   else if (ev->button == 3)
   {
     p2.x = static_cast<float>(ev->x);
     p2.y = static_cast<float>(ev->y);
-    recast = true;
   }
   else if (ev->button == 2)
   {
