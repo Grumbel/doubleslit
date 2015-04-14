@@ -36,7 +36,7 @@ Physics::Physics() :
     {
       p.x = x;
       p.y = sqrtf(r*r - x*x);
-    
+
       //p *= 50.0f;
       p += glm::vec2(400, 400);
 
@@ -59,7 +59,7 @@ Physics::Physics() :
     {
       p.x = x;
       p.y = -(x*x) * 0.1f;
-    
+
       p *= 50.0f;
       p += glm::vec2(400, 600);
 
@@ -70,7 +70,7 @@ Physics::Physics() :
       last = p;
     }
   }
-  
+
   cast_ray(glm::vec2(205.0f, 50.0f), glm::normalize(glm::vec2(0.1, 1.0f)));
 }
 
@@ -87,7 +87,7 @@ Physics::add_rect(float x, float y, float w, float h)
   glm::vec2 p2(x+w, y);
   glm::vec2 p3(x+w, y+h);
   glm::vec2 p4(x, y+h);
-  
+
   m_segments.push_back(Line(p1, p2));
   m_segments.push_back(Line(p2, p3));
   m_segments.push_back(Line(p3, p4));
@@ -98,7 +98,7 @@ bool intersect(const Ray& ray, const Line& seg, float& u)
 {
   const float x1 = ray.pos.x;
   const float y1 = ray.pos.y;
-  
+
   const float x3 = seg.p1.x;
   const float y3 = seg.p1.y;
 
@@ -121,7 +121,7 @@ bool intersect(const Ray& ray, const Line& seg, float& u)
     return (ub >= 0.0f && ub <= 1.0f);
   }
 }
-    
+
 void
 Physics::cast_ray(const glm::vec2& position, const glm::vec2& direction, int depth)
 {
@@ -163,7 +163,7 @@ Physics::find_collision(const Ray& ray, int depth)
   {
     glm::vec2 seg_dir = segment.p2 - segment.p1;
     glm::vec2 colpos = ray.pos + ray.dir * nearest_match;
-    //std::cout << "best: " << nearest_match << " = " << colpos.x << " " << colpos.y << std::endl; 
+    //std::cout << "best: " << nearest_match << " = " << colpos.x << " " << colpos.y << std::endl;
     cast_ray(colpos, glm::reflect(ray.dir, glm::normalize(glm::vec2(-seg_dir.y, seg_dir.x))), depth+1);
 
     m_rays.push_back(RayLine{Line(ray.pos, colpos), depth});
@@ -181,7 +181,7 @@ Physics::draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
   cr->set_source_rgb(0,0,0);
   cr->paint();
-  
+
   cr->set_operator(Cairo::OPERATOR_ADD);
   cr->set_source_rgb(1,1,1);
   cr->set_line_width(1.0);
@@ -228,7 +228,7 @@ Doubleslit::Doubleslit() :
   //Connect the signal handler if it isn't already a virtual method override:
   //  signal_draw().connect(sigc::mem_fun(*this, &Doubleslit::on_draw), false);
   add_events(Gdk::POINTER_MOTION_MASK | Gdk::BUTTON_PRESS_MASK | Gdk::BUTTON_RELEASE_MASK |
-             Gdk::KEY_PRESS_MASK      | Gdk::KEY_RELEASE_MASK | 
+             Gdk::KEY_PRESS_MASK      | Gdk::KEY_RELEASE_MASK |
              Gdk::ENTER_NOTIFY_MASK   | Gdk::LEAVE_NOTIFY_MASK);
 
   signal_button_release_event().connect(sigc::mem_fun(this, &Doubleslit::on_button_release_event));
@@ -330,13 +330,13 @@ Doubleslit::on_button_press_event (GdkEventButton* ev)
     {
       auto fn = [&]() -> float {return generator(); };
       /*
-        auto fn = [&]() -> float { 
+        auto fn = [&]() -> float {
         float p = ((static_cast<float>(i)/(n-1)) - 0.5f) * 2.0f;
         float o =0.5f;
         float norm = 1.0f - (pow(2.71828182846, -0.5 * pow(p/o, 2.0)) / 2.71828182846);
         return norm *p;
         };*/
-      
+
       glm::vec2 dir = p2 - p1;
       dir = glm::rotate(dir, fn() * 10.0f);
 
