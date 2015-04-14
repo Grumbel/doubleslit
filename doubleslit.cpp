@@ -16,9 +16,9 @@ Physics::Physics() :
 {
   if (true)
   {
-    add_rect(100, 400, 200, 10);
-    add_rect(304, 400, 2, 10);
-    add_rect(310, 400, 200, 10);
+    add_rect(100, 400, 200, 1);
+    add_rect(304, 400, 2, 1);
+    add_rect(310, 400, 200, 1);
   }
 
   if (false)
@@ -127,7 +127,6 @@ Physics::cast_ray(const glm::vec2& position, const glm::vec2& direction, int dep
 {
   if (depth < 10)
   {
-    depth += 1;
     Ray ray{position, direction};
     find_collision(ray, depth);
   }
@@ -165,22 +164,25 @@ Physics::find_collision(const Ray& ray, int depth)
     glm::vec2 seg_dir = segment.p2 - segment.p1;
     glm::vec2 colpos = ray.pos + ray.dir * nearest_match;
     //std::cout << "best: " << nearest_match << " = " << colpos.x << " " << colpos.y << std::endl; 
-    cast_ray(colpos, glm::reflect(ray.dir, glm::normalize(glm::vec2(-seg_dir.y, seg_dir.x))), depth);
+    cast_ray(colpos, glm::reflect(ray.dir, glm::normalize(glm::vec2(-seg_dir.y, seg_dir.x))), depth+1);
 
-    m_rays.push_back(Line(ray.pos, colpos));
+    m_rays.push_back(RayLine{Line(ray.pos, colpos), depth});
   }
   else
   {
-    m_rays.push_back(Line(ray.pos, ray.pos + ray.dir * 100000.0f));
+    m_rays.push_back(RayLine{Line(ray.pos, ray.pos + glm::normalize(ray.dir) * 10000.0f), depth});
   }
 }
 
 void
 Physics::draw(const Cairo::RefPtr<Cairo::Context>& cr)
 {
+  cr->set_antialias(Cairo::ANTIALIAS_NONE);
+
   cr->set_source_rgb(0,0,0);
   cr->paint();
-
+  
+  cr->set_operator(Cairo::OPERATOR_ADD);
   cr->set_source_rgb(1,1,1);
   cr->set_line_width(1.0);
   for(auto& seg : m_segments)
@@ -193,17 +195,24 @@ Physics::draw(const Cairo::RefPtr<Cairo::Context>& cr)
   cr->set_line_width(4.0);
   for(auto& ray : m_rays)
   {
-    cr->set_source_rgba(0, 1, 0, 0.02);
-    cr->move_to(ray.p1.x, ray.p1.y);
-    cr->line_to(ray.p2.x, ray.p2.y);
+    float alpha = 0.01f;
+    if (ray.depth == 0)
+      cr->set_source_rgba(0.1, 1, 0.1, alpha);
+    else if (ray.depth == 1)
+      cr->set_source_rgba(1, 0.1, 0.1, alpha);
+    else
+      cr->set_source_rgba(0.1, 0.1, 1, alpha);
+
+    cr->move_to(ray.line.p1.x, ray.line.p1.y);
+    cr->line_to(ray.line.p2.x, ray.line.p2.y);
     cr->stroke();
 
     // collision point
     if (false)
     {
-    cr->set_source_rgba(1, 0, 0, 1.0);
-    cr->arc(ray.p1.x, ray.p1.y, 4.0, 0.0, 2.0 * M_PI);
-    cr->fill();
+      cr->set_source_rgba(1, 0, 0, 1.0);
+      cr->arc(ray.line.p1.x, ray.line.p1.y, 4.0, 0.0, 2.0 * M_PI);
+      cr->fill();
     }
   }
 }
@@ -307,23 +316,21 @@ Doubleslit::on_button_press_event (GdkEventButton* ev)
     scroll += glm::vec2(ev->x - get_width()/2, ev->y - get_height()/2);
   }
 
-  if (recast)
-  {
-  std::mt19937 engine;
-  //std::uniform_real_distribution<float> distribution(-1, 1);
-  std::normal_distribution<float> distribution(0.0f, 0.2);
-  auto generator = std::bind(distribution, engine);
-
   // scatter
   if (true)
   {
+    std::mt19937 engine;
+    //std::uniform_real_distribution<float> distribution(-1, 1);
+    std::normal_distribution<float> distribution(0.0f, 0.2);
+    auto generator = std::bind(distribution, engine);
+
     m_physics.clear_rays();
-    int n = 50;
+    int n = 1000;
     for(int i = 0; i < n; i += 1)
     {
       auto fn = [&]() -> float {return generator(); };
       /*
-      auto fn = [&]() -> float { 
+        auto fn = [&]() -> float { 
         float p = ((static_cast<float>(i)/(n-1)) - 0.5f) * 2.0f;
         float o =0.5f;
         float norm = 1.0f - (pow(2.71828182846, -0.5 * pow(p/o, 2.0)) / 2.71828182846);
@@ -331,11 +338,11 @@ Doubleslit::on_button_press_event (GdkEventButton* ev)
         };*/
       
       glm::vec2 dir = p2 - p1;
-      dir = glm::rotate(dir, fn() * 5.0f);
+      dir = glm::rotate(dir, fn() * 10.0f);
 
-      glm::vec2 off(fn() * -40.0f,
-                    fn() * -40.0f);
-      m_physics.cast_ray(p1 + off, dir);
+      glm::vec2 off(fn() * -45.0f,
+                    fn() * -45.0f);
+      m_physics.cast_ray(p1+off, dir);
     }
   }
 
@@ -344,14 +351,14 @@ Doubleslit::on_button_press_event (GdkEventButton* ev)
   {
     m_physics.clear_rays();
     int d = 20;
-    for(int i = -d; i <= d; i += 3)
+    for(int i = -d; i <= d; i += 1)
     {
       glm::vec2 dir = glm::normalize(p2 - p1);
       glm::vec2 off(-dir.y, dir.x);
       m_physics.cast_ray(p1 + 35.0f * static_cast<float>(i) * off, dir);
     }
-  } 
   }
+
   queue_draw();
 
   std::cout << "button press" << std::endl;

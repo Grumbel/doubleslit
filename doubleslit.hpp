@@ -5,6 +5,12 @@
 
 #include "line.hpp"
 
+struct RayLine
+{
+  Line line;
+  int depth;
+};
+
 class Ray
 {
 public:
@@ -16,7 +22,7 @@ class Physics
 {
 private:
   std::vector<Line> m_segments;
-  std::vector<Line> m_rays;
+  std::vector<RayLine> m_rays;
 
 public:
   Physics();
