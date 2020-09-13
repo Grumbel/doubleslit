@@ -16,7 +16,6 @@
 
 #include <random>
 #include <limits>
-#include <boost/optional.hpp>
 #include <vector>
 #include <ctime>
 #include <cmath>
