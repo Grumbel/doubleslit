@@ -22,6 +22,7 @@
 #include <cairomm/context.h>
 #include <glibmm/main.h>
 
+#define GLM_ENABLE_EXPERIMENTAL
 #define GLM_FORCE_RADIANS
 #include <glm/ext.hpp>
 
