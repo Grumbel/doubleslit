@@ -29,11 +29,12 @@ public:
 
 protected:
   //Override default signal handler:
-  virtual bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr);
-  virtual bool on_key_release_event(GdkEventKey* event) override;
-  virtual bool on_motion_notify_event (GdkEventMotion* event);
-  virtual bool on_button_release_event (GdkEventButton* event);
-  virtual bool on_button_press_event (GdkEventButton* event);
+  bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
+  bool on_key_press_event(GdkEventKey* event) override;
+  bool on_key_release_event(GdkEventKey* event) override;
+  bool on_motion_notify_event (GdkEventMotion* event) override;
+  bool on_button_release_event (GdkEventButton* event) override;
+  bool on_button_press_event (GdkEventButton* event) override;
   bool on_timeout();
 
   Physics m_physics;

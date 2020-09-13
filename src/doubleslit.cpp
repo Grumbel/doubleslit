@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#include <iostream>
 #include <random>
 #include <limits>
 #include <vector>
@@ -27,6 +28,7 @@
 #include <glm/ext.hpp>
 
 #include "doubleslit.hpp"
+#include "scenes.hpp"
 
 Doubleslit::Doubleslit() :
   m_physics(),
@@ -34,6 +36,8 @@ Doubleslit::Doubleslit() :
   p2(0.0f, 1.0f),
   scroll()
 {
+  set_can_focus();
+
   Glib::signal_timeout().connect( sigc::mem_fun(*this, &Doubleslit::on_timeout), 1000 );
 
   //Connect the signal handler if it isn't already a virtual method override:
@@ -45,6 +49,10 @@ Doubleslit::Doubleslit() :
   signal_button_release_event().connect(sigc::mem_fun(this, &Doubleslit::on_button_release_event));
   signal_button_press_event().connect(sigc::mem_fun(this, &Doubleslit::on_button_press_event));
   signal_motion_notify_event().connect(sigc::mem_fun(this, &Doubleslit::on_motion_notify_event));
+  signal_key_press_event().connect(sigc::mem_fun(this, &Doubleslit::on_key_press_event));
+  signal_key_release_event().connect(sigc::mem_fun(this, &Doubleslit::on_key_release_event));
+
+  scene_create_doubleslit(m_physics);
 }
 
 Doubleslit::~Doubleslit()
@@ -82,9 +90,36 @@ bool Doubleslit::on_timeout()
 }
 
 bool
+Doubleslit::on_key_press_event(GdkEventKey* ev)
+{
+  switch(ev->keyval)
+  {
+    case GDK_KEY_1:
+      m_physics.clear_geometry();
+      scene_create_doubleslit(m_physics);
+      break;
+
+    case GDK_KEY_2:
+      m_physics.clear_geometry();
+      scene_create_rectangles(m_physics);
+      break;
+
+    case GDK_KEY_3:
+      m_physics.clear_geometry();
+      scene_create_half_circle(m_physics);
+      break;
+
+    case GDK_KEY_4:
+      m_physics.clear_geometry();
+      scene_create_parabola(m_physics);
+      break;
+  }
+  return true;
+}
+
+bool
 Doubleslit::on_key_release_event(GdkEventKey* ev)
 {
-  //std::cout << "key" << std::endl;
   return true;
 }
 
