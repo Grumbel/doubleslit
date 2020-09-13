@@ -20,10 +20,14 @@ project(doubleslit VERSION 0.0.0)
 include(GNUInstallDirs)
 
 find_package(PkgConfig REQUIRED)
-pkg_search_module(GTKMM REQUIRED gtkmm-2.4 IMPORTED_TARGET)
-pkg_search_module(CAIROMM REQUIRED cairomm IMPORTED_TARGET)
+pkg_search_module(GTKMM REQUIRED gtkmm-3.0 IMPORTED_TARGET)
+pkg_search_module(CAIROMM REQUIRED cairomm-1.0 IMPORTED_TARGET)
 
-add_executable(doubleslit src/main.cpp src/xml_eval.cpp)
+add_executable(doubleslit
+  src/doubleslit.cpp
+  src/line.cpp
+  src/main.cpp
+  src/physics.cpp)
 target_include_directories(doubleslit PRIVATE src/)
 target_link_libraries(doubleslit PUBLIC
   PkgConfig::GTKMM
