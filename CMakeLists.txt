@@ -27,7 +27,9 @@ add_executable(doubleslit
   src/doubleslit.cpp
   src/line.cpp
   src/main.cpp
-  src/physics.cpp)
+  src/physics.cpp
+  src/scenes.cpp
+  )
 target_include_directories(doubleslit PRIVATE src/)
 target_link_libraries(doubleslit PUBLIC
   PkgConfig::GTKMM

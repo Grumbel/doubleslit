@@ -28,7 +28,10 @@ private:
 public:
   Physics();
 
+  void add_line(Line const& line);
   void add_rect(float x, float y, float w, float h);
+  void clear_geometry();
+
   void cast_ray(const glm::vec2& position, const glm::vec2& direction, int depth = 0);
   void find_collision(const Ray& ray, int depth);
   void draw(const Cairo::RefPtr<Cairo::Context>& cr);

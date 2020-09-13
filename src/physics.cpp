@@ -20,64 +20,6 @@ Physics::Physics() :
   m_segments(),
   m_rays()
 {
-  if (false) // double slit
-  {
-    add_rect(100, 400, 200, 1);
-    add_rect(304, 400, 2, 1);
-    add_rect(310, 400, 200, 1);
-  }
-  else if (true)
-  {
-    for(int i = 0; i < 30; ++i)
-    {
-      add_rect(static_cast<float>(rand()%600),
-               static_cast<float>(rand()%600),
-               static_cast<float>(rand()%200),
-               static_cast<float>(rand()%200));
-    }
-  }
-  else if (true)
-  {
-    glm::vec2 p;
-    glm::vec2 last;
-    float r = 300.0f;
-    for(float x = -r; x <= r; x += 1.0f)
-    {
-      p.x = x;
-      p.y = sqrtf(r*r - x*x);
-
-      //p *= 50.0f;
-      p += glm::vec2(400, 400);
-
-      if (x != -r)
-      {
-        m_segments.push_back(Line(last, p));
-      }
-      last = p;
-    }
-  }
-  else if (false) // parabola
-  {
-    glm::vec2 p;
-    glm::vec2 last;
-    float start = -10.0f;
-    float end   =  10.0f;
-    for(float x = start; x <= end; x += 0.1f)
-    {
-      p.x = x;
-      p.y = -(x*x) * 0.1f;
-
-      p *= 50.0f;
-      p += glm::vec2(400, 600);
-
-      if (x != start)
-      {
-        m_segments.push_back(Line(last, p));
-      }
-      last = p;
-    }
-  }
-
   //cast_ray(glm::vec2(205.0f, 50.0f), glm::normalize(glm::vec2(0.1, 1.0f)));
 }
 
@@ -85,6 +27,18 @@ void
 Physics::clear_rays()
 {
   m_rays.clear();
+}
+
+void
+Physics::clear_geometry()
+{
+  m_segments.clear();
+}
+
+void
+Physics::add_line(Line const& line)
+{
+  m_segments.push_back(line);
 }
 
 void
