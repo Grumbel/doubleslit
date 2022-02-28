@@ -2,3 +2,4 @@
 doubleslit
 *.o
 *~
+/result
